@@ -12,7 +12,7 @@ type Movie struct {
 	Runtime     int            `json:"runtime"`
 	Rating      int            `json:"rating"`
 	CBFCRating  string         `json:"cbfc_rating"`
-	CreatedAt   time.Time      `json:"created_at,omitempty"`
-	UpdatedAt   time.Time      `json:"updated_at,omitempty"`
+	CreatedAt   time.Time      `json:"_"`
+	UpdatedAt   time.Time      `json:"_"`
 	MovieGenre  map[int]string `json:"genres"`
 }

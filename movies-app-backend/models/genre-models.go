@@ -4,18 +4,18 @@ import "time"
 
 // Genre is type for genre
 type Genre struct {
-	ID        int       `json:"id,omitempty"`
+	ID        int       `json:"id"`
 	GenreName string    `json:"genre_name"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	CreatedAt time.Time `json:"_"`
+	UpdatedAt time.Time `json:"_"`
 }
 
 // MovieGenre is type for movie genre
 type MovieGenre struct {
-	ID        int       `json:"id,omitempty"`
-	MovieID   int       `json:"movie_id,omitempty"`
-	GenreID   int       `json:"genre_id,omitempty"`
+	ID        int       `json:"_"`
+	MovieID   int       `json:"_"`
+	GenreID   int       `json:"_"`
 	Genre     Genre     `json:"genre"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	CreatedAt time.Time `json:"_"`
+	UpdatedAt time.Time `json:"_"`
 }
