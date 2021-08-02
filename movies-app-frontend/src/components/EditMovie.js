@@ -4,6 +4,7 @@ import "./EditMovie.css";
 import Input from "./form-components/Input";
 import TextArea from "./form-components/TextArea";
 import Select from "./form-components/Select";
+import Alert from "./ui-components/Alert";
 
 export default class EditMovie extends Component {
   constructor(props) {
@@ -27,6 +28,10 @@ export default class EditMovie extends Component {
       isLoaded: false,
       error: null,
       valErrors: [],
+      alert: {
+        type: "d-none",
+        message: "",
+      },
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -73,7 +78,21 @@ export default class EditMovie extends Component {
     fetch("http://localhost:4000/v1/admin/editmovie", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        alert(JSON.stringify(data));
+        if (data.error) {
+          this.setState({
+            alert: {
+              type: "alert-danger",
+              message: data.error.message,
+            },
+          });
+        } else {
+          this.setState({
+            alert: {
+              type: "alert-success",
+              message: "Changes saved!",
+            },
+          });
+        }
       });
   };
 
@@ -89,7 +108,7 @@ export default class EditMovie extends Component {
   };
 
   hasValError(key) {
-    return this.state.valErrors.indexOf(key) !== -1
+    return this.state.valErrors.indexOf(key) !== -1;
   }
 
   componentDidMount() {
@@ -146,6 +165,10 @@ export default class EditMovie extends Component {
       return (
         <Fragment>
           <h2>Add/Edit Movie</h2>
+          <Alert
+            alertType={this.state.alert.type}
+            alertMessage={this.state.alert.message}
+          />
           <hr />
           <form onSubmit={this.handleSubmit}>
             <input
@@ -157,64 +180,70 @@ export default class EditMovie extends Component {
             />
             <Input
               title={"Title"}
-              className={this.hasValError("title")? "is-invalid": ""}
+              className={this.hasValError("title") ? "is-invalid" : ""}
               type={"text"}
               name={"title"}
               value={movie.title}
               handleChange={this.handleChange}
-              errorDiv={this.hasValError("title") ? "text-danger": "d-none"}
+              errorDiv={this.hasValError("title") ? "text-danger" : "d-none"}
               errorMsg={"Please enter the title"}
             />
             <Input
               title={"Release"}
-              className={this.hasValError("release_date")? "is-invalid": ""}
+              className={this.hasValError("release_date") ? "is-invalid" : ""}
               type={"date"}
               name={"release_date"}
               value={movie.release_date}
               handleChange={this.handleChange}
-              errorDiv={this.hasValError("release_date") ? "text-danger": "d-none"}
+              errorDiv={
+                this.hasValError("release_date") ? "text-danger" : "d-none"
+              }
               errorMsg={"Please select release date"}
             />
             <Input
               title={"Runtime"}
-              className={this.hasValError("runtime")? "is-invalid": ""}
+              className={this.hasValError("runtime") ? "is-invalid" : ""}
               type={"text"}
               name={"runtime"}
               value={movie.runtime}
               handleChange={this.handleChange}
-              errorDiv={this.hasValError("runtime") ? "text-danger": "d-none"}
+              errorDiv={this.hasValError("runtime") ? "text-danger" : "d-none"}
               errorMsg={"Please enter the runtime"}
             />
             <Select
               title={"CBFC Rating"}
-              className={this.hasValError("cbfc_rating")? "is-invalid": ""}
+              className={this.hasValError("cbfc_rating") ? "is-invalid" : ""}
               name={"cbfc_rating"}
               options={this.state.cbfcOptions}
               value={movie.cbfc_rating}
               handleChange={this.handleChange}
               placeholder={"Choose..."}
-              errorDiv={this.hasValError("cbfc_rating") ? "text-danger": "d-none"}
+              errorDiv={
+                this.hasValError("cbfc_rating") ? "text-danger" : "d-none"
+              }
               errorMsg={"Please select cbfc rating"}
             />
             <Input
               title={"Rating"}
-              className={this.hasValError("rating")? "is-invalid": ""}
+              className={this.hasValError("rating") ? "is-invalid" : ""}
               type={"text"}
               name={"rating"}
               value={movie.rating}
               handleChange={this.handleChange}
-              errorDiv={this.hasValError("rating") ? "text-danger": "d-none"}
+              errorDiv={this.hasValError("rating") ? "text-danger" : "d-none"}
               errorMsg={"Please enter rating"}
             />
             <TextArea
               title={"Description"}
-              className={this.hasValError("description")? "is-invalid": ""}
+              className={this.hasValError("description") ? "is-invalid" : ""}
               type={"textarea"}
               name={"description"}
               value={movie.description}
               handleChange={this.handleChange}
               rows="3"
-              errorDiv={this.hasValError("description") ? "text-danger": "d-none"}
+              errorDiv={
+                this.hasValError("description") ? "text-danger" : "d-none"
+              }
               errorMsg={"Please write description"}
             />
             <hr />
