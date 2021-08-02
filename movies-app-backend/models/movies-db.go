@@ -17,7 +17,7 @@ func (m *DBModels) GetMovie(id int) (*Movie, error) {
 	defer cancel()
 
 	query := `select 
-				id, title, description, year, release_date, runtime, cbfc_rating, created_at, updated_at 
+				id, title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at 
 			  from movies 
 			  where id = $1`
 	row := m.DB.QueryRowContext(ctx, query, id)
@@ -30,6 +30,7 @@ func (m *DBModels) GetMovie(id int) (*Movie, error) {
 		&movie.Year,
 		&movie.ReleaseDate,
 		&movie.Runtime,
+		&movie.Rating,
 		&movie.CBFCRating,
 		&movie.CreatedAt,
 		&movie.UpdatedAt,
@@ -85,7 +86,7 @@ func (m *DBModels) GetAllMovies(genre ...int) ([]*Movie, error) {
 		where = fmt.Sprintf("where id in (select movie_id from movies_genres where genre_id = %d)", genre[0])
 	}
 	query := fmt.Sprintf(`select 
-				id, title, description, year, release_date, runtime, cbfc_rating, created_at, updated_at 
+				id, title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at 
 			  from movies
 			  %s	
 			  order by title
@@ -108,6 +109,7 @@ func (m *DBModels) GetAllMovies(genre ...int) ([]*Movie, error) {
 			&movie.Year,
 			&movie.ReleaseDate,
 			&movie.Runtime,
+			&movie.Rating,
 			&movie.CBFCRating,
 			&movie.CreatedAt,
 			&movie.UpdatedAt,
@@ -154,4 +156,40 @@ func (m *DBModels) GetAllMovies(genre ...int) ([]*Movie, error) {
 	}
 
 	return movies, nil
+}
+
+func (m *DBModels) InsertMovie(movie Movie) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := `insert into movies 
+			 (title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at)
+			values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+			`
+
+	_, err := m.DB.ExecContext(ctx, stmt, movie.Title,
+		movie.Description, movie.Year, movie.ReleaseDate, movie.Runtime, movie.Rating, movie.CBFCRating, movie.CreatedAt, movie.UpdatedAt)
+
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (m *DBModels) UpdateMovie(movie Movie) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := `update movies set
+			 title = $1, description = $2, year = $3, release_date = $4, runtime = $5, rating = $6, cbfc_rating = $7, updated_at = $8 
+			where id = $9
+			`
+
+	_, err := m.DB.ExecContext(ctx, stmt, movie.Title,
+		movie.Description, movie.Year, movie.ReleaseDate, movie.Runtime, movie.Rating, movie.CBFCRating, movie.UpdatedAt, movie.ID)
+
+	if err != nil {
+		return err
+	}
+	return err
 }

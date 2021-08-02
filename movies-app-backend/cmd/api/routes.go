@@ -15,6 +15,7 @@ func (app *application) routes() http.Handler {
 	// movies
 	router.HandlerFunc(http.MethodGet, "/"+apiVersion+"/movie/:id", app.getMovie)
 	router.HandlerFunc(http.MethodGet, "/"+apiVersion+"/movies", app.getAllMovies)
+	router.HandlerFunc(http.MethodPost, "/"+apiVersion+"/admin/editmovie", app.editMovie)
 
 	// genres
 	router.HandlerFunc(http.MethodGet, "/"+apiVersion+"/genres", app.getAllGenres)
