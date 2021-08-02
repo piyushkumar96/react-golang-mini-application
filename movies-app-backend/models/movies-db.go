@@ -16,10 +16,10 @@ func (m *DBModels) GetMovie(id int) (*Movie, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	query := `select 
+	query := fmt.Sprintf(`select 
 				id, title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at 
 			  from movies 
-			  where id = $1`
+			  where id = $1`)
 	row := m.DB.QueryRowContext(ctx, query, id)
 
 	var movie Movie
@@ -39,7 +39,7 @@ func (m *DBModels) GetMovie(id int) (*Movie, error) {
 		return nil, err
 	}
 
-	genreQuery := `select
+	genreQuery := fmt.Sprintf(`select
 				 mg.id, mg.movie_id, mg.genre_id, g.genre_name 
 			 from 
 			 	movies_genres mg 
@@ -47,7 +47,7 @@ func (m *DBModels) GetMovie(id int) (*Movie, error) {
 			 	genres g 
 			 on (mg.genre_id = g.id)
 			 where mg.movie_id = $1
-			`
+			`)
 
 	rows, err := m.DB.QueryContext(ctx, genreQuery, id)
 	defer rows.Close()
@@ -118,7 +118,7 @@ func (m *DBModels) GetAllMovies(genre ...int) ([]*Movie, error) {
 			return nil, err
 		}
 
-		genreQuery := `select
+		genreQuery := fmt.Sprintf(`select
 				 mg.id, mg.movie_id, mg.genre_id, g.genre_name 
 			 from 
 			 	movies_genres mg 
@@ -126,7 +126,7 @@ func (m *DBModels) GetAllMovies(genre ...int) ([]*Movie, error) {
 			 	genres g 
 			 on (mg.genre_id = g.id)
 			 where mg.movie_id = $1
-			`
+			`)
 
 		genreRows, err := m.DB.QueryContext(ctx, genreQuery, movie.ID)
 		if err != nil {
@@ -162,10 +162,10 @@ func (m *DBModels) InsertMovie(movie Movie) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	stmt := `insert into movies 
+	stmt := fmt.Sprintf(`insert into movies 
 			 (title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at)
 			values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-			`
+			`)
 
 	_, err := m.DB.ExecContext(ctx, stmt, movie.Title,
 		movie.Description, movie.Year, movie.ReleaseDate, movie.Runtime, movie.Rating, movie.CBFCRating, movie.CreatedAt, movie.UpdatedAt)
@@ -180,10 +180,10 @@ func (m *DBModels) UpdateMovie(movie Movie) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	stmt := `update movies set
+	stmt := fmt.Sprintf(`update movies set
 			 title = $1, description = $2, year = $3, release_date = $4, runtime = $5, rating = $6, cbfc_rating = $7, updated_at = $8 
 			where id = $9
-			`
+			`)
 
 	_, err := m.DB.ExecContext(ctx, stmt, movie.Title,
 		movie.Description, movie.Year, movie.ReleaseDate, movie.Runtime, movie.Rating, movie.CBFCRating, movie.UpdatedAt, movie.ID)
@@ -191,5 +191,18 @@ func (m *DBModels) UpdateMovie(movie Movie) error {
 	if err != nil {
 		return err
 	}
-	return err
+	return nil
+}
+
+func (m *DBModels) DeleteMovie(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	stmt := fmt.Sprintf(`delete from movies where id = $1`)
+
+	_, err := m.DB.ExecContext(ctx, stmt, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
