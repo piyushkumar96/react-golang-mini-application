@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/julienschmidt/httprouter"
-	"movies-app-backend/models"
 	"net/http"
+	"react-golang-mini-application/movies-app-backend/models"
 	"strconv"
 	"time"
 )
@@ -102,8 +102,7 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
-	params := httprouter.ParamsFromContext(r.Context())
-
+	params := r.Context().Value("params").(httprouter.Params)
 	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil {
 		app.errorJSON(w, err)

@@ -6,9 +6,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"movies-app-backend/models"
 	"net/http"
 	"os"
+	"react-golang-mini-application/movies-app-backend/models"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -21,6 +21,9 @@ type config struct {
 	env  string
 	db   struct {
 		dsn string
+	}
+	jwt struct {
+		secret string
 	}
 }
 
@@ -42,6 +45,7 @@ func main() {
 	flag.IntVar(&cfg.port, "port", 4000, "Server port to listen on")
 	flag.StringVar(&cfg.env, "env", "development", "Application environment (developer|production)")
 	flag.StringVar(&cfg.db.dsn, "dsn", "postgres://postgres:postgres@localhost/go_movies?sslmode=disable", "Postgres connection string")
+	flag.StringVar(&cfg.jwt.secret, "jwt-secret", "mysecretcode", "jwt secret for signing and verifying")
 	flag.Parse()
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
