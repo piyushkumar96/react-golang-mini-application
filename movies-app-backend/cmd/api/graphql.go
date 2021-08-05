@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/graphql-go/graphql"
 	"io"
+	"log"
 	"net/http"
 	"react-golang-mini-application/movies-app-backend/models"
+	"strings"
 )
 
 var movies []*models.Movie
@@ -40,6 +42,28 @@ var fields = graphql.Fields{
 		Description: "Get all movies",
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 			return movies, nil
+		},
+	},
+	"search": &graphql.Field{
+		Type:        graphql.NewList(movieType),
+		Description: "Search movies by title",
+		Args: graphql.FieldConfigArgument{
+			"titleContains": &graphql.ArgumentConfig{
+				Type: graphql.String,
+			},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			var theList []*models.Movie
+			search, ok := p.Args["titleContains"].(string)
+			if ok {
+				for _, currMovie := range movies {
+					if strings.Contains(currMovie.Title, search) {
+						log.Println("Found, one")
+						theList = append(theList, currMovie)
+					}
+				}
+			}
+			return theList, nil
 		},
 	},
 }
