@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/graphql-go/graphql"
 	"io"
-	"log"
 	"net/http"
 	"react-golang-mini-application/movies-app-backend/models"
 	"strings"
@@ -58,7 +57,6 @@ var fields = graphql.Fields{
 			if ok {
 				for _, currMovie := range movies {
 					if strings.Contains(currMovie.Title, search) {
-						log.Println("Found, one")
 						theList = append(theList, currMovie)
 					}
 				}
@@ -100,6 +98,9 @@ var movieType = graphql.NewObject(graphql.ObjectConfig{
 		},
 		"updated_at": &graphql.Field{
 			Type: graphql.DateTime,
+		},
+		"poster": &graphql.Field{
+			Type: graphql.String,
 		},
 	},
 })

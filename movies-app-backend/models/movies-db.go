@@ -17,7 +17,7 @@ func (m *DBModels) GetMovie(id int) (*Movie, error) {
 	defer cancel()
 
 	query := fmt.Sprintf(`select 
-				id, title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at 
+				id, title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at, coalesce(poster,'') 
 			  from movies 
 			  where id = $1`)
 	row := m.DB.QueryRowContext(ctx, query, id)
@@ -34,6 +34,7 @@ func (m *DBModels) GetMovie(id int) (*Movie, error) {
 		&movie.CBFCRating,
 		&movie.CreatedAt,
 		&movie.UpdatedAt,
+		&movie.Poster,
 	)
 	if err != nil {
 		return nil, err
@@ -86,7 +87,7 @@ func (m *DBModels) GetAllMovies(genre ...int) ([]*Movie, error) {
 		where = fmt.Sprintf("where id in (select movie_id from movies_genres where genre_id = %d)", genre[0])
 	}
 	query := fmt.Sprintf(`select 
-				id, title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at 
+				id, title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at, coalesce(poster, '')
 			  from movies
 			  %s	
 			  order by title
@@ -113,6 +114,7 @@ func (m *DBModels) GetAllMovies(genre ...int) ([]*Movie, error) {
 			&movie.CBFCRating,
 			&movie.CreatedAt,
 			&movie.UpdatedAt,
+			&movie.Poster,
 		)
 		if err != nil {
 			return nil, err
@@ -163,12 +165,12 @@ func (m *DBModels) InsertMovie(movie Movie) error {
 	defer cancel()
 
 	stmt := fmt.Sprintf(`insert into movies 
-			 (title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at)
-			values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+			 (title, description, year, release_date, runtime, rating, cbfc_rating, created_at, updated_at, poster)
+			values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 			`)
 
 	_, err := m.DB.ExecContext(ctx, stmt, movie.Title,
-		movie.Description, movie.Year, movie.ReleaseDate, movie.Runtime, movie.Rating, movie.CBFCRating, movie.CreatedAt, movie.UpdatedAt)
+		movie.Description, movie.Year, movie.ReleaseDate, movie.Runtime, movie.Rating, movie.CBFCRating, movie.CreatedAt, movie.UpdatedAt, movie.Poster)
 
 	if err != nil {
 		return err
@@ -181,12 +183,12 @@ func (m *DBModels) UpdateMovie(movie Movie) error {
 	defer cancel()
 
 	stmt := fmt.Sprintf(`update movies set
-			 title = $1, description = $2, year = $3, release_date = $4, runtime = $5, rating = $6, cbfc_rating = $7, updated_at = $8 
-			where id = $9
+			 title = $1, description = $2, year = $3, release_date = $4, runtime = $5, rating = $6, cbfc_rating = $7, updated_at = $8, poster = $9
+			where id = $10
 			`)
 
 	_, err := m.DB.ExecContext(ctx, stmt, movie.Title,
-		movie.Description, movie.Year, movie.ReleaseDate, movie.Runtime, movie.Rating, movie.CBFCRating, movie.UpdatedAt, movie.ID)
+		movie.Description, movie.Year, movie.ReleaseDate, movie.Runtime, movie.Rating, movie.CBFCRating, movie.UpdatedAt, movie.Poster, movie.ID)
 
 	if err != nil {
 		return err
