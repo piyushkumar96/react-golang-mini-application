@@ -8,6 +8,7 @@ import Genres from "./components/Genres";
 import OneGenre from "./components/OneGenre";
 import EditMovie from "./components/EditMovie";
 import Login from "./components/Login";
+import GraphQL from "./components/GraphQL";
 
 export default class App extends Component {
   constructor(props) {
@@ -82,6 +83,9 @@ export default class App extends Component {
                       </li>
                     </Fragment>
                   )}
+                  <li className="list-group-item">
+                    <Link to="/graphql">GraphQL</ Link>
+                  </li>
                 </ul>
               </nav>
             </div>
@@ -100,7 +104,13 @@ export default class App extends Component {
                     <EditMovie {...props} jwt={this.state.jwt} />
                   )}
                 />
+
                 <Route path="/genre/:id" component={OneGenre} />
+
+                <Route exact path="/graphql">
+                  <GraphQL />
+                </Route>
+
                 <Route
                   exact
                   path="/login"
