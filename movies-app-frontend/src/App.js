@@ -19,12 +19,22 @@ export default class App extends Component {
     this.handleJWTChange(this.handleJWTChange.bind(this));
   }
 
+  componentDidMount() {
+    let jwt = window.localStorage.getItem("jwt");
+    if (jwt) {
+      if (this.state.jwt === "") {
+        this.setState({ jwt: JSON.parse(jwt) });
+      }
+    }
+  }
+
   handleJWTChange = (jwt) => {
     this.setState({ jwt: jwt });
   };
 
   logout = () => {
     this.setState({ jwt: "" });
+    window.localStorage.removeItem("jwt");
   };
 
   render() {
