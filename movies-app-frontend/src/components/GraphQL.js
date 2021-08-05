@@ -42,31 +42,31 @@ export default class GraphQL extends Component {
         `
 
         const headers = new Headers();
-        headers.append("Content-Type", "application/json")
+        headers.append("Content-Type", "application/json");
 
         const requestOptions = {
-            method: "POST",
-            body: payload,
-            headers: headers
-        }
+          method: "POST",
+          body: payload,
+          headers: headers,
+        };
 
         fetch("http://localhost:4000/v1/graphql", requestOptions)
-            .then((response) => response.json())
-            .then((data) => {
-                let theList = Object.values(data.data.search)
-                return theList
-            })
-            .then((theList) => {
-                if (theList.length > 0) {
-                    this.setState({
-                        movies: theList
-                    })
-                }else {
-                    this.setState({
-                        movies: [],
-                    })
-                }
-            })
+          .then((response) => response.json())
+          .then((data) => {
+            let theList = Object.values(data.data.search);
+            return theList;
+          })
+          .then((theList) => {
+            if (theList.length > 0) {
+              this.setState({
+                movies: theList,
+              });
+            } else {
+              this.setState({
+                movies: [],
+              });
+            }
+          });
     }
 
     componentDidMount() {
