@@ -23,6 +23,9 @@ func (app *application) routes() http.Handler {
 	router := httprouter.New()
 	secure := alice.New(app.checkToken)
 
+	// GraphQL
+	router.HandlerFunc(http.MethodPost, "/v1/graphql", app.moviesGraphQL)
+
 	// authentication
 	router.HandlerFunc(http.MethodPost, "/v1/signin", app.signIn)
 
