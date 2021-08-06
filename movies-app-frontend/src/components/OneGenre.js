@@ -6,7 +6,7 @@ export default class OneGenre extends Component {
     movies: [],
     isLoaded: false,
     error: null,
-      genreName: ""
+    genreName: "",
   };
 
   componentDidMount() {
@@ -25,7 +25,7 @@ export default class OneGenre extends Component {
           {
             movies: json.movies,
             isLoaded: true,
-              genreName: this.props.location.genreName
+            genreName: this.props.location.genreName,
           },
           (error) => {
             this.setState({

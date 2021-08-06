@@ -35,7 +35,7 @@ export default class OneMovieGraphQL extends Component {
       .then((data) => {
         this.setState({
           movie: data.data.movie,
-            isLoaded: true
+          isLoaded: true,
         });
       });
   }
@@ -58,9 +58,12 @@ export default class OneMovieGraphQL extends Component {
             Movie: {movie.title} ({movie.year})
           </h2>
           {movie.poster !== "" && (
-              <div>
-                <img src={`https://image.tmdb.org/t/p/w200${movie.poster}`} alt="poster"/>
-              </div>
+            <div>
+              <img
+                src={`https://image.tmdb.org/t/p/w200${movie.poster}`}
+                alt="poster"
+              />
+            </div>
           )}
           <div className="float-start">
             <small>Rating: {movie.cbfc_rating}</small>

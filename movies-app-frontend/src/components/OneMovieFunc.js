@@ -75,4 +75,4 @@ function OneMovieFunc(props) {
   }
 }
 
-export default OneMovieFunc
+export default OneMovieFunc;
