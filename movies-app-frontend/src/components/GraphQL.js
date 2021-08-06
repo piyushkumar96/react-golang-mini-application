@@ -24,7 +24,11 @@ export default class GraphQL extends Component {
     this.setState((prevState) => ({
       searchTerm: value,
     }));
-    this.performSearch();
+    if (value.length) {
+      this.performSearch();
+    } else {
+      this.setState({ movies: [] });
+    }
   };
 
   performSearch() {
